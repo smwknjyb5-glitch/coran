@@ -1,12 +1,10 @@
+
  <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
 <title>البحث في كلمات القرآن بالحرف</title>
-script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7174828243666618"
-     crossorigin="anonymous"></script>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+
 <style>
 body{
     font-family:Tahoma;
@@ -59,6 +57,7 @@ input,select,button{
 </select>
 
 <button onclick="searchQuran()">بحث</button>
+<button onclick="saveSearch()">💾 حفظ البحث</button>
 
 <div id="results"></div>
 
@@ -6526,6 +6525,56 @@ function searchQuran(){
 
     document.getElementById("results").innerHTML =
     html || "لا توجد نتائج";
+}
+    function saveSearch() {
+    const letter = document.getElementById("letter").value.trim();
+    const position = document.getElementById("position").value;
+    const results = document.getElementById("results").innerText.trim();
+
+    if (letter === "") {
+        alert("يرجى إدخال حرف البحث أولاً.");
+        return;
+    }
+
+    if (results === "") {
+        alert("لا توجد نتائج لحفظها. قم بالبحث أولاً.");
+        return;
+    }
+
+    let positionText = "";
+
+    if (position === "start") {
+        positionText = "بداية الكلمة";
+    } else if (position === "middle") {
+        positionText = "وسط الكلمة";
+    } else if (position === "end") {
+        positionText = "نهاية الكلمة";
+    }
+
+    const content =
+        "البحث في كلمات القرآن الكريم\n" +
+        "============================\n" +
+        "الحرف: " + letter + "\n" +
+        "الموضع: " + positionText + "\n" +
+        "============================\n\n" +
+        results;
+
+    const blob = new Blob(
+        ["\ufeff" + content],
+        { type: "text/plain;charset=utf-8" }
+    );
+
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+
+    link.href = url;
+    link.download = "بحث_القرآن_" + letter + ".txt";
+
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    URL.revokeObjectURL(url);
 }
 </script>
 
